@@ -31,6 +31,7 @@ function Board() {
   const drop = () => {
     if (!checkCollision(player, board, { x: 0, y: 1 })) {
       updatePlayerPos({ x: 0, y: 1, collided: false });
+      console.log("can go down!");
     } else {
       if (player.pos.y < 1) {
         console.log("Game Over!");
@@ -47,18 +48,14 @@ function Board() {
 
   const move = ({ keyCode }) => {
     if (!gameOver) {
-      if (keyCode === 37) {
-        movePlayer(-1);
-        console.log("left");
-      } else if (keyCode === 39) movePlayer(1);
+      if (keyCode === 37) movePlayer(-1);
+      else if (keyCode === 39) movePlayer(1);
       else if (keyCode === 40) dropPlayer();
-      else if (keyCode === 38) {
-        console.log("upper key called!");
-        playerRotate(board, 1);
-      }
+      else if (keyCode === 38) playerRotate(board, 1);
     }
   };
-
+  console.log(board, "board");
+  console.log(player.pos);
   return (
     <div className="board" onKeyDown={(e) => move(e)}>
       {board.map((row, i) =>
