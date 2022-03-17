@@ -16,7 +16,7 @@ export const useBoard = (player, resetPlayer) => {
       player.tetramino.forEach((row, y) => {
         row.forEach((value, x) => {
           if (value !== 0) {
-            newBoard[y + player.pos.y][player.pos.x] = [
+            newBoard[y + player.pos.y][x + player.pos.x] = [
               value,
               `${player.collided ? "merged" : "clear"}`,
               color,
@@ -24,11 +24,15 @@ export const useBoard = (player, resetPlayer) => {
           }
         });
       });
+
+      if (player.collided) {
+        resetPlayer();
+      }
       return newBoard;
     };
 
     setBoard((prev) => updateBoard(prev));
-  }, [player]);
+  }, [player, resetPlayer]);
 
   return [board, setBoard];
 };
