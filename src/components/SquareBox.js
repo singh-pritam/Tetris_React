@@ -1,10 +1,10 @@
 import React from "react";
-// import "./SquareBox.css";
-import { Tetrominos } from "../Tetrominos";
 import { StyledSquareBox } from "./styles/StyledSquareBox";
 
 function SquareBox(props) {
-  return <StyledSquareBox color={props.color}></StyledSquareBox>;
+  return (
+    <StyledSquareBox color={props.color}>{console.log("box")}</StyledSquareBox>
+  );
 }
 
-export default SquareBox;
+export default React.memo(SquareBox);

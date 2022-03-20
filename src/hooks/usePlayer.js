@@ -2,12 +2,12 @@ import React, { useCallback, useState } from "react";
 import { numberOfColumns, numberOfRows } from "../BoardShape";
 import { checkCollision } from "../CollisionDetection";
 
-import { randTetrominos } from "../Tetrominos";
+import { randTetrominos, Tetrominos } from "../Tetrominos";
 
 export const usePlayer = () => {
   const [player, setPlayer] = useState({
     pos: { x: 0, y: 0 },
-    tetramino: randTetrominos().shape,
+    tetramino: Tetrominos[0],
     collided: false,
   });
 
@@ -21,9 +21,9 @@ export const usePlayer = () => {
     });
   };
 
-  const rotate = (tetromino, dir) => {
-    const rotateTetromino = tetromino.map((_, index) => {
-      return tetromino.map((col) => col[index]);
+  const rotate = (tetromino_shape, dir) => {
+    const rotateTetromino = tetromino_shape.map((_, index) => {
+      return tetromino_shape.map((col) => col[index]);
     });
     if (dir > 0) return rotateTetromino.map((row) => row.reverse());
 
@@ -32,15 +32,14 @@ export const usePlayer = () => {
 
   const playerRotate = (board, dir) => {
     const clonedPlayer = JSON.parse(JSON.stringify(player));
-    clonedPlayer.tetramino = rotate(clonedPlayer.tetramino, dir);
-    console.log(clonedPlayer.tetramino);
+    clonedPlayer.tetramino.shape = rotate(clonedPlayer.tetramino.shape, dir);
     const pos = clonedPlayer.pos.x;
     let offset = 1;
     while (checkCollision(clonedPlayer, board, { x: 0, y: 0 })) {
       clonedPlayer.pos.x += offset;
       offset = -(offset + (offset > 0 ? 1 : -1));
-      if (offset > clonedPlayer.tetramino[0].length) {
-        rotate(clonedPlayer.tetramino, -dir);
+      if (offset > clonedPlayer.tetramino.shape[0].length) {
+        rotate(clonedPlayer.tetramino.shape, -dir);
         clonedPlayer.pos.x = pos;
         return;
       }
@@ -51,7 +50,7 @@ export const usePlayer = () => {
   const resetPlayer = useCallback(() => {
     setPlayer({
       pos: { x: numberOfColumns / 2 - 1, y: 0 },
-      tetramino: randTetrominos().shape,
+      tetramino: randTetrominos(),
       collided: false,
     });
   }, []);

@@ -2,10 +2,6 @@ import styled from "styled-components";
 
 export const StyledSquareBox = styled.div`
   width: auto;
-  background: rgba(${(props) => props.color}, 0.9);
-  border: ${(props) => (props.type === 0 ? "1px solid" : "4px solid")};
-  border-bottom-color: rgba(${(props) => props.color}, 0.1);
-  border-top-color: rgba(${(props) => props.color}, 0.1);
-  border-left-color: rgba(${(props) => props.color}, 0.3);
-  border-right-color: rgba(${(props) => props.color}, 0.1);
+  background: rgba(${(props) => props.color});
+  border: 0.1px solid #cce6ff;
 `;

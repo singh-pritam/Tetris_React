@@ -29,14 +29,13 @@ export const useBoard = (player, resetPlayer) => {
       );
 
       //Draw tetromino
-      let color = randTetrominos().color;
-      player.tetramino.forEach((row, y) => {
+      player.tetramino.shape.forEach((row, y) => {
         row.forEach((value, x) => {
           if (value !== 0) {
             newBoard[y + player.pos.y][x + player.pos.x] = [
               value,
               `${player.collided ? "merged" : "clear"}`,
-              color,
+              player.tetramino.color,
             ];
           }
         });
@@ -52,5 +51,5 @@ export const useBoard = (player, resetPlayer) => {
     setBoard((prev) => updateBoard(prev));
   }, [player, resetPlayer]);
 
-  return [board, setBoard];
+  return [board, setBoard, clearedRows];
 };

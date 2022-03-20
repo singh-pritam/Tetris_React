@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import { createShape } from "../BoardShape";
 import SquareBox from "./SquareBox";
-import "./Board.css";
+import "./Tetris.css";
 import { usePlayer } from "../hooks/usePlayer";
 import { useBoard } from "../hooks/useBoard";
-import { randTetrominos } from "../Tetrominos";
 import uuid from "react-uuid";
 import { checkCollision } from "../CollisionDetection";
+import { useInterval } from "../hooks/useInterval";
+import { useGameStatus } from "../hooks/useGameStatus";
 
 function Board() {
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(false);
 
   const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
-  const [board, setBoard] = useBoard(player, resetPlayer);
+  const [board, setBoard, clearedRows] = useBoard(player, resetPlayer);
+  const [score, setScore, level, setLevel, rows, setRows] =
+    useGameStatus(clearedRows);
 
   const movePlayer = (dir) => {
     if (!checkCollision(player, board, { x: dir, y: 0 })) {
@@ -23,15 +26,22 @@ function Board() {
 
   const startGame = () => {
     setBoard(createShape());
-    console.log(board);
+    setDropTime(1000);
     resetPlayer();
     setGameOver(false);
+    setScore(0);
+    setRows(0);
+    setLevel(0);
   };
 
   const drop = () => {
+    if (rows > (level + 1) * 10) {
+      setLevel((prev) => prev + 1);
+      setDropTime(1000 / (level + 1) + 200);
+    }
+
     if (!checkCollision(player, board, { x: 0, y: 1 })) {
       updatePlayerPos({ x: 0, y: 1, collided: false });
-      console.log("can go down!");
     } else {
       if (player.pos.y < 1) {
         console.log("Game Over!");
@@ -54,15 +64,31 @@ function Board() {
       else if (keyCode === 38) playerRotate(board, 1);
     }
   };
-  console.log(board, "board");
-  console.log(player.pos);
+
+  const gameStatus = () => {
+    if (gameOver) return "Game Over";
+
+    return "Score: " + score;
+  };
+
+  useInterval(() => {
+    drop();
+  }, dropTime);
+
   return (
-    <div className="board" onKeyDown={(e) => move(e)}>
-      {board.map((row, i) =>
-        row.map((box, j) => <SquareBox key={uuid()} color={box[2]} />)
-      )}
-      <button onClick={startGame}>Start</button>
-      {console.log(player.pos)}
+    <div className="screen" onKeyDown={(e) => move(e)}>
+      <div className="board">
+        {board.map((row, i) =>
+          row.map((box, j) => <SquareBox key={uuid()} color={box[2]} />)
+        )}
+      </div>
+      <div className="left_screen">
+        <button onClick={startGame} className="start_button">
+          Start
+        </button>
+        <div className="display">{gameStatus()}</div>
+        <div className="display">Level: {level}</div>
+      </div>
     </div>
   );
 }

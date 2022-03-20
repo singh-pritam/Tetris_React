@@ -1,13 +1,12 @@
 import React from "react";
 import "./App.css";
-import LeftScreen from "./components/LeftScreen.js";
-import RightScreen from "./components/RightScreen";
+import Tetris from "./components/Tetris";
+import { Tetrominos } from "./Tetrominos";
 
 function App() {
   return (
     <div className="App">
-      <LeftScreen />
-      <RightScreen />
+      <Tetris />
     </div>
   );
 }
